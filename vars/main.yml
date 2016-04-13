@@ -1,0 +1,4 @@
+---
+# vars file for ansible-filebeat
+
+logstash_hosts: '["172.16.2.229:5044","172.16.2.230:5044"]'

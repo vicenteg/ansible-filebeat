@@ -1,0 +1,27 @@
+---
+# tasks file for ansible-filebeat
+
+- name: install beats GPG key
+  sudo_user: root
+  rpm_key: key=https://packages.elastic.co/GPG-KEY-elasticsearch state=present validate_certs=False
+  environment: proxy_env
+
+- name: install beats repo
+  sudo_user: root
+  copy: src=beats.repo dest=/etc/yum.repos.d/beats.repo mode=0644 owner=root group=root
+
+- name: install filebeat
+  sudo_user: root
+  yum: name=filebeat state=present
+  environment: proxy_env
+
+- name: install filebeat configuration
+  sudo_user: root
+  template: src=filebeat.yml.j2 dest=/etc/filebeat/filebeat.yml mode=0644
+  notify: restart filebeat
+
+- name: start filebeat service
+  sudo_user: root
+  service: name=filebeat state=started
+  register: filebeat_start
+
